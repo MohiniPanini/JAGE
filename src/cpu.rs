@@ -27,7 +27,7 @@ pub struct Registers {
 
 
 impl Registers {
-	pub fn init() -> Registers {
+	pub fn new() -> Registers {
 		return Registers {
 			af: RegisterUnion {double: 0},
 			bc: RegisterUnion {double: 0},
