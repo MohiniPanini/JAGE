@@ -1,20 +1,28 @@
+#![allow(dead_code)]
+
 mod rom;
-mod cpu;
+mod registers;
 mod render;
-mod tilemap;
+mod screen;
+mod cpu;
 
 extern crate sdl2;
+extern crate spin_sleep;
 
-use render::Renderer;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use std::time::Duration;
-use std::time::Instant; //DEBUG
-use cpu::RegisterName;
-use cpu::Registers;
+
+
+use render::Renderer;
+use registers::Registers;
+use rom::Rom;
+use cpu::Cpu;
+use screen::*;
+
 
 const M_CYCLE_LENGTH: u32 = 1_000_000_000u32 / 1_048_576;
-const FRAME_LENGTH: u32 = 240; //idk why this is right but don't change it
+const FRAME_LENGTH: u32 = 17555;
 const SCREEN_WIDTH: u32 = 160;
 const SCREEN_HEIGHT: u32 = 144;
 const render_scale: u32 = 4;
@@ -22,14 +30,9 @@ const render_scale: u32 = 4;
 fn main() {
 	let arguments: Vec<String> = std::env::args().collect();
 	assert!(arguments.len() == 2, "Not enough args");
-	let game_rom: rom::Rom = rom::load_rom(arguments[1].clone()).ok()
+	let rom: Rom = Rom::load_rom(arguments[1].clone()).ok()
 		.expect("Failed to load Gameboy ROM");
 	println!("File is a valid Gameboy ROM");
-	
-	let mut registers = Registers::new();
-	registers.write(RegisterName::A, 128);
-	registers.write(RegisterName::F, 1);
-	println!("{:}", registers.read(RegisterName::AF)); //0b1000000000000001
 
 	let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -39,16 +42,13 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut renderer: Renderer = Renderer::new(window);
-
     let mut event_pump = sdl_context.event_pump().unwrap();
     let mut cycle_count = 0;
 
-    /*
-    let now = Instant::now(); //DEBUG
-    let mut elapsed = now.elapsed(); //DEBUG
-    let mut framecount = 0; //DEBUG
-    */
+    let mut renderer: Renderer = Renderer::new(window);
+    let screen: Screen = Screen::new();
+
+    let mut cpu: Cpu = Cpu::new(rom); 
 
     'running: loop {
         cycle_count = cycle_count + 1;
@@ -62,15 +62,12 @@ fn main() {
             }
         }
 
+        //CPU::
+
 		if cycle_count == FRAME_LENGTH {
-            /*
-            elapsed = now.elapsed();
-            framecount = framecount + 1;
-            */
 			cycle_count = 0;
-			renderer.render();
+			renderer.render(Screen::test_screen());
 		}
-        ::std::thread::sleep(Duration::new(0, M_CYCLE_LENGTH));
+        spin_sleep::sleep(Duration::new(0, M_CYCLE_LENGTH));
     }
-    //println!("Rendered frame {:}, time elapsed: {:.2?}", framecount, elapsed);
 }
