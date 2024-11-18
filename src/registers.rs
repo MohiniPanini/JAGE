@@ -13,26 +13,32 @@ pub enum RegisterName {
 	D,
 	E,
 	DE,
+	H,
+	L,
+	HL,
 	SP,
-	PC,
-	SPPC //not a real register!!
+	PC
 }
 
 pub struct Registers {
 	af: RegisterUnion,
 	bc: RegisterUnion,
 	de: RegisterUnion,
-	sppc: RegisterUnion
+	hl: RegisterUnion,
+	sp: u16,
+	pc: u16
 }
 
 
 impl Registers {
 	pub fn new() -> Registers {
-		return Registers {
-			af: RegisterUnion {double: 0},
-			bc: RegisterUnion {double: 0},
-			de: RegisterUnion {double: 0},
-			sppc: RegisterUnion {double: 0}
+		return Registers {//emulates behavior of DMG
+			af: RegisterUnion {double: 0x0108},
+			bc: RegisterUnion {double: 0x0013},
+			de: RegisterUnion {double: 0x00D8},
+			hl: RegisterUnion {double: 0x007C},
+			sp: 0xFFFE,
+			pc: 0x0100
 		}
 	}	
 	pub fn write(&mut self, register: RegisterName, data: u16) {
@@ -50,9 +56,12 @@ impl Registers {
 				RegisterName::E => self.de.singles[0] = data as u8,
 				RegisterName::DE => self.de.double = data,
 
-				RegisterName::SP => self.sppc.singles[1] = data as u8,
-				RegisterName::PC => self.sppc.singles[0] = data as u8,
-				RegisterName::SPPC => panic!("No valid opcodes support SPPC (I think)")
+				RegisterName::H => self.hl.singles[1] = data as u8,
+				RegisterName::L => self.hl.singles[0] = data as u8,
+				RegisterName::HL => self.hl.double = data,
+
+				RegisterName::SP => self.sp = data,
+				RegisterName::PC => self.pc = data,
 			}
 		}
 	}
@@ -70,10 +79,13 @@ impl Registers {
 				RegisterName::D => self.de.singles[1] as u16,
 				RegisterName::E => self.de.singles[0] as u16,
 				RegisterName::DE => self.de.double,
+
+				RegisterName::H => self.hl.singles[1] as u16,
+				RegisterName::L => self.hl.singles[0] as u16,
+				RegisterName::HL => self.hl.double,
 	
-				RegisterName::SP => self.sppc.singles[1] as u16,
-				RegisterName::PC => self.sppc.singles[0] as u16,
-				RegisterName::SPPC => panic!("No valid opcodes support SPPC (I think)")
+				RegisterName::SP => self.sp,
+				RegisterName::PC => self.pc,
 			}
 		}
 	}

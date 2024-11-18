@@ -9,7 +9,7 @@ const VALID_LOGO: [u8; 48] = [0xCE, 0xED, 0x66, 0x66, 0xCC, 0x0D, 0x00, 0x0B, 0x
 #[derive(Default)]
 #[derive(Debug)]
 pub struct Rom {
-	data: Vec<u8>,
+	pub data: Vec<u8>,
 	
 	title: [u8; 11],
 	manufacturing_code: [u8; 4],

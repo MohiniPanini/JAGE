@@ -46,7 +46,7 @@ fn main() {
     let mut cycle_count = 0;
 
     let mut renderer: Renderer = Renderer::new(window);
-    let screen: Screen = Screen::new();
+    let mut screen: Screen = Screen::new();
 
     let mut cpu: Cpu = Cpu::new(rom); 
 
@@ -62,7 +62,7 @@ fn main() {
             }
         }
 
-        //CPU::
+        cpu.exec(&mut screen);
 
 		if cycle_count == FRAME_LENGTH {
 			cycle_count = 0;
