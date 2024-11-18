@@ -1,6 +1,6 @@
 
 
-const TEST_TILE: Tile = Tile {data: [0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C]};
+pub const TEST_TILE: Tile = Tile {data: [0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C]};
 
 #[derive(Default, Copy, Clone)]
 pub struct Tile {
@@ -28,7 +28,9 @@ impl Screen {
     pub fn test_screen() -> Screen {
         let mut screen = Screen::new();
         screen.tiledata[0][0] = TEST_TILE;
-        screen.lcdc = 0b10010010;
+        screen.lcdc = 0b10010011;
+        screen.scx = 0b00000110;
+        screen.scy = 0b00000110;
         return screen;
     }
 }

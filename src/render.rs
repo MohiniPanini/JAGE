@@ -1,6 +1,7 @@
 use crate::render_scale;
 use crate::screen::Tile;
 use crate::screen::Screen;
+use crate::screen::TEST_TILE;
 use sdl2::video::Window;
 use sdl2::pixels::Color;
 use sdl2::render::Canvas;
@@ -121,9 +122,9 @@ impl Renderer {
             //we are simplifying rendering by treating it atomically for rn
             //TODO: implement scanline-by-scanline rendering for accuracy + rastering
             //row will then be an argument passed in from outside
-            for row in 0..18 { //one extra because we might need to render part of a 19th row
+            for row in 0..19 { //one extra because we might need to render part of a 19th row
                 let tile_row = bg_tilemap[(starting_row + row) % 18];
-                for column in 0..20 { //also one extra for the same reason
+                for column in 0..21 { //also one extra for the same reason
                     let tile_id = tile_row[(starting_column + column) % 20] as usize;
                     self.draw_tile(bg_tiledata[tile_id], (column as i32 * 8) - x_offset, (row as i32 * 8) - y_offset);
                 }
