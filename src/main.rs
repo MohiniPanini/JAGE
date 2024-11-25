@@ -25,7 +25,7 @@ const M_CYCLE_LENGTH: u32 = 1_000_000_000u32 / 1_048_576;
 const FRAME_LENGTH: u32 = 17555;
 const SCREEN_WIDTH: u32 = 160;
 const SCREEN_HEIGHT: u32 = 144;
-const render_scale: u32 = 4;
+const RENDER_SCALE: u32 = 4;
 
 fn main() {
 	let arguments: Vec<String> = std::env::args().collect();
@@ -37,7 +37,7 @@ fn main() {
 	let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
-    let window = video_subsystem.window("JAGE", SCREEN_WIDTH * render_scale, SCREEN_HEIGHT * render_scale)
+    let window = video_subsystem.window("JAGE", SCREEN_WIDTH * RENDER_SCALE, SCREEN_HEIGHT * RENDER_SCALE)
         .position_centered()
         .build()
         .unwrap();

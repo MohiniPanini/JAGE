@@ -1,4 +1,4 @@
-use crate::render_scale;
+use crate::RENDER_SCALE;
 use crate::screen::Tile;
 use crate::screen::Screen;
 use crate::screen::TEST_TILE;
@@ -25,10 +25,10 @@ impl Renderer {
     fn draw_dot(&mut self, x: i32, y: i32, color: Color) {
         self.canvas.set_draw_color(color);
         self.canvas.fill_rect(Rect::new(
-            x * (render_scale as i32),
-            y * (render_scale as i32),
-            render_scale,
-            render_scale
+            x * (RENDER_SCALE as i32),
+            y * (RENDER_SCALE as i32),
+            RENDER_SCALE,
+            RENDER_SCALE
         )).unwrap();
     }
     fn draw_test(&mut self) {

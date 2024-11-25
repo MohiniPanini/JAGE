@@ -16,7 +16,7 @@ pub struct Rom {
 	cgb: u8,
 	licensee_code: [u8; 2],
 	sgb: u8,
-	cartridge_type: u8,
+	pub cartridge_type: u8,
 	rom_size: u8,
 	ram_size: u8
 }

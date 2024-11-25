@@ -2,7 +2,7 @@ union RegisterUnion {
 	double: u16,
 	singles: [u8; 2] //index 0 is least significant byte of double, index 1 is most significant
 }
-
+#[derive(Copy, Clone)]
 pub enum RegisterName {
 	A,
 	F,
