@@ -1,3 +1,5 @@
+use std::fmt;
+
 union RegisterUnion {
 	double: u16,
 	singles: [u8; 2] //index 0 is least significant byte of double, index 1 is most significant
@@ -33,10 +35,10 @@ pub struct Registers {
 impl Registers {
 	pub fn new() -> Registers {
 		return Registers {//emulates behavior of DMG
-			af: RegisterUnion {double: 0x0108},
+			af: RegisterUnion {double: 0x01B0},
 			bc: RegisterUnion {double: 0x0013},
 			de: RegisterUnion {double: 0x00D8},
-			hl: RegisterUnion {double: 0x007C},
+			hl: RegisterUnion {double: 0x014D},
 			sp: 0xFFFE,
 			pc: 0x0100
 		}
@@ -91,4 +93,25 @@ impl Registers {
 	}
 }
 
-
+impl fmt::Display for Registers {
+	fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+		let a = self.read(RegisterName::A);
+		let f = self.read(RegisterName::F);        
+        let b = self.read(RegisterName::B);
+        let c = self.read(RegisterName::C);        
+        let d = self.read(RegisterName::D);
+        let e = self.read(RegisterName::E);        
+        let h = self.read(RegisterName::H);
+        let l = self.read(RegisterName::L);        
+        let sp = self.read(RegisterName::SP);
+        let pc = self.read(RegisterName::PC);
+        
+        writeln!(formatter, "AF: {:08b}\t{:08b}\t{:#04X?}\t{:#04X?}", a, f, a, f)?;
+        writeln!(formatter, "BC: {:08b}\t{:08b}\t{:#04X?}\t{:#04X?}", b, c, b, c)?;
+        writeln!(formatter, "DE: {:08b}\t{:08b}\t{:#04X?}\t{:#04X?}", d, e, d, e)?;
+        writeln!(formatter, "HL: {:08b}\t{:08b}\t{:#04X?}\t{:#04X?}", h, l, h, l)?;
+        writeln!(formatter, "SP: {:#04X?}", sp)?;
+        writeln!(formatter, "PC: ${:04X?}", pc)
+        
+    }
+}

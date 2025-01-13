@@ -25,7 +25,7 @@ impl Rom {
 	pub fn load_rom(filename: String) -> Result<Rom, Error> {
 		let mut file = File::open(filename)?;
 		let filesize = file.metadata()?.len();
-		assert!(!(filesize == 0 || filesize % ROM_BANK_SIZE != 0), "File is not a valid Gameboy ROM, or is corrupt!");
+		assert!((filesize != 0 && filesize % ROM_BANK_SIZE == 0), "File is not a valid Gameboy ROM, or is corrupt!");
 
 		let mut data: Vec<u8> = Vec::new();
 		file.read_to_end(&mut data)?;
@@ -35,13 +35,11 @@ impl Rom {
 		for i in 0..48 {
 			assert!(logo[i] == VALID_LOGO[i], "Logo match failed");
 		}
-		let mut checksum: i32 = 0;
+		let mut checksum: u8 = 0;
 		let checksum_bytes = &data[0x0134..0x014D];
 		for i in checksum_bytes.iter().cloned() {
-			let byte: i32 = i.into();
-			checksum -= byte + 1;
+			checksum = checksum.wrapping_sub(i + 1);
 		}
-		checksum &= 0xFF;
 		if checksum != data[0x014D].into() {
 			panic!("Checksum match failed");
 		}
